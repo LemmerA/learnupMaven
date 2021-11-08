@@ -1,9 +1,10 @@
 package ru.learnup.javaqa.learnupmvn.game;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class FuncsTest {
+class SpeedGameStateTest {
 
     private final int[] speedArr = {50, 0, 21, 0, 1, 1, 50, 0, 1, 32, 10, 1};
     private final int[] loseArr = {2, 3, 7};
@@ -41,9 +42,13 @@ class FuncsTest {
     private final String[] unsignedIntOverflowArr = {"John 4294967296", "Mary 4294967296",
             "Jack 4294967296"};
 
-    GameState gameState = new GameState(false, 1);
-    GameState gameStateGreen = new GameState(true, 1);
-    GameState gameStateNegative = new GameState(false, -10);
+    SpeedGameState gameState = new SpeedGameState();
+
+    @BeforeEach
+    public void setup(){
+        gameState.setGreenLight(false);
+        gameState.setMaxSpeed(1);
+    }
 
     //countLostSpeeds tests
     @Test
@@ -78,12 +83,14 @@ class FuncsTest {
 
     @Test
     public void successCountLostSpeedsGreen() {
-        assertEquals(0, gameStateGreen.countLostSpeeds(speedArr));
+        gameState.setGreenLight(true);
+        assertEquals(0, gameState.countLostSpeeds(speedArr));
     }
 
     @Test
     public void successCountLostSpeedsNegativeMaxSpeed() {
-        assertEquals(3, gameStateNegative.countLostSpeeds(negativeArr));
+        gameState.setMaxSpeed(-10);
+        assertEquals(3, gameState.countLostSpeeds(negativeArr));
     }
 
     //lostSpeedArr tests
@@ -120,13 +127,15 @@ class FuncsTest {
 
     @Test
     public void successLostArrGreen() {
-        assertArrayEquals(emptyArr, gameStateGreen.lostSpeedArr(speedArr));
+        gameState.setGreenLight(true);
+        assertArrayEquals(emptyArr, gameState.lostSpeedArr(speedArr));
     }
 
     @Test
     public void successLostArrNegativeMaxSpeed() {
+        gameState.setMaxSpeed(-10);
         int[] expected = {-1, -3, -0};
-        assertArrayEquals(expected, gameStateNegative.lostSpeedArr(negativeArr));
+        assertArrayEquals(expected, gameState.lostSpeedArr(negativeArr));
     }
 
     //wonSpeedArr tests
@@ -163,13 +172,15 @@ class FuncsTest {
 
     @Test
     public void successWonArrGreen() {
-        assertArrayEquals(speedArr, gameStateGreen.wonSpeedArr(speedArr));
+        gameState.setGreenLight(true);
+        assertArrayEquals(speedArr, gameState.wonSpeedArr(speedArr));
     }
 
     @Test
     public void successWonArrNegativeMaxSpeed() {
+        gameState.setMaxSpeed(-10);
         int[] expected = {-10, -99};
-        assertArrayEquals(expected, gameStateNegative.wonSpeedArr(negativeArr));
+        assertArrayEquals(expected, gameState.wonSpeedArr(negativeArr));
     }
 
     //countLostNames tests
@@ -225,12 +236,14 @@ class FuncsTest {
 
     @Test
     public void successCountLostNamesGreen() {
-        assertEquals(0, gameStateGreen.countLostNames(nameArr));
+        gameState.setGreenLight(true);
+        assertEquals(0, gameState.countLostNames(nameArr));
     }
 
     @Test
     public void successCountLostNamesNegativeMaxSpeed() {
-        assertEquals(3, gameStateNegative.countLostNames(negativeNameArr));
+        gameState.setMaxSpeed(-10);
+        assertEquals(3, gameState.countLostNames(negativeNameArr));
     }
 
     @Test
@@ -334,15 +347,17 @@ class FuncsTest {
 
     @Test
     public void successWonNameArrGreen() {
+        gameState.setGreenLight(true);
         String[] expected = {"John", "Mary", "Jack", "Helen",
                 "Kate", "Gary", "Lily"};
-        assertArrayEquals(expected, gameStateGreen.wonNameArr(nameArr));
+        assertArrayEquals(expected, gameState.wonNameArr(nameArr));
     }
 
     @Test
     public void successWonNameArrNegativeMaxSpeed() {
+        gameState.setMaxSpeed(-10);
         String[] expected = {"John", "Kate"};
-        assertArrayEquals(expected, gameStateNegative.wonNameArr(negativeNameArr));
+        assertArrayEquals(expected, gameState.wonNameArr(negativeNameArr));
     }
 
     @Test
@@ -391,5 +406,28 @@ class FuncsTest {
     @Test
     public void successWonNameArrUnsignedIntOverflow() {
         assertThrows(NumberFormatException.class, () -> gameState.wonNameArr(unsignedIntOverflowArr));
+    }
+
+    //isFailed tests
+    @Test
+    public void successIsFailed() {
+        assertEquals(gameState.isFailed(2), true);
+    }
+
+    @Test
+    public void successIsFailedFalse() {
+        assertEquals(gameState.isFailed(1), false);
+    }
+
+    @Test
+    public void successIsFailedNegative() {
+        gameState.setMaxSpeed(-10);
+        assertEquals(gameState.isFailed(-11), false);
+    }
+
+    @Test
+    public void successIsFailedGreen() {
+        gameState.setGreenLight(true);
+        assertEquals(gameState.isFailed(10), false);
     }
 }

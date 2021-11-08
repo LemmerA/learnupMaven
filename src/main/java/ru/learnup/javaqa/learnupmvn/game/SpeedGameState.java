@@ -5,18 +5,20 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GameState {
-    protected boolean isGreenLight;
+public class SpeedGameState extends GameState{
+    private int maxSpeed;
 
-    public GameState(boolean isGreenLight){
-        this.isGreenLight = isGreenLight;
+    public SpeedGameState(boolean isGreenLight, int maxSpeed){
+        super(isGreenLight);
+        this.maxSpeed = maxSpeed;
     }
 
+    @Override
     public int countLostSpeeds(int[] speeds){
         int counter = 0;
         if (!isGreenLight) {
             for (int speed : speeds) {
-                if (speed > 0) {
+                if (speed > maxSpeed) {
                     counter++;
                 }
             }
@@ -24,6 +26,7 @@ public class GameState {
         return counter;
     }
 
+    @Override
     public int[] lostSpeedArr(int[] speeds){
         int[] lostArr = new int[countLostSpeeds(speeds)];
         if (!isGreenLight) {
@@ -31,7 +34,7 @@ public class GameState {
             for (int i = 0; i < lostArr.length; i++) {
                 for (int j = jCounter; j < speeds.length; j++) {
                     jCounter++;
-                    if (speeds[j] > 0) {
+                    if (speeds[j] > maxSpeed) {
                         lostArr[i] = speeds[j];
                         break;
                     }
@@ -41,6 +44,8 @@ public class GameState {
         return lostArr;
     }
 
+
+    @Override
     public int[] wonSpeedArr(int[] speeds){
         int[] wonArr = new int[speeds.length - countLostSpeeds(speeds)];
         if (isGreenLight){
@@ -50,7 +55,7 @@ public class GameState {
             for (int i = 0; i < wonArr.length; i++) {
                 for (int j = jCounter; j < speeds.length; j++) {
                     jCounter++;
-                    if (speeds[j] <= 0) {
+                    if (speeds[j] <= maxSpeed) {
                         wonArr[i] = speeds[j];
                         break;
                     }
@@ -60,11 +65,12 @@ public class GameState {
         }
     }
 
+    @Override
     protected int countLostNames(String[] nameSpeeds){
         int counter = 0;
         if (!isGreenLight) {
             for (String nameSpeed : nameSpeeds) {
-                if (Integer.parseInt(nameSpeed.split(" +")[1]) > 0) {
+                if (Integer.parseInt(nameSpeed.split(" +")[1]) > maxSpeed) {
                     counter++;
                 }
             }
@@ -72,6 +78,7 @@ public class GameState {
         return counter;
     }
 
+    @Override
     public String[] wonNameArr(String[] nameSpeeds){
         String[] wonArr;
         if (isGreenLight){
@@ -85,7 +92,7 @@ public class GameState {
             for (int i = 0; i < wonArr.length; i++) {
                 for (int j = jCounter; j < nameSpeeds.length; j++) {
                     jCounter++;
-                    if (Integer.parseInt(nameSpeeds[j].split(" +")[1]) <= 0) {
+                    if (Integer.parseInt(nameSpeeds[j].split(" +")[1]) <= maxSpeed) {
                         wonArr[i] = nameSpeeds[j].split(" +")[0];
                         break;
                     }
@@ -95,9 +102,10 @@ public class GameState {
         return wonArr;
     }
 
+    @Override
     protected boolean isFailed(int speed){
         if (!isGreenLight){
-            return speed > 0;
+            return speed > maxSpeed;
         }
         return false;
     }
