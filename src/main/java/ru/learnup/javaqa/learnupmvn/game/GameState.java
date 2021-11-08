@@ -5,12 +5,9 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class GameState {
     protected boolean isGreenLight;
-
-    public GameState(boolean isGreenLight){
-        this.isGreenLight = isGreenLight;
-    }
 
     public int countLostSpeeds(int[] speeds){
         int counter = 0;

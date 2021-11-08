@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         GameState gameState = new GameState(true);
         SpeedGameState speedGameState = new SpeedGameState(false, 10);
+        SpeedGameState test = new SpeedGameState(1);
         int[] speedArr = {50, 0, 21, 5, 1, 15, 50, 0, 2, 5, 1, 2};
         String[] nameArr = {"John 50", "Mary 5", "Jack 0", "Helen 10"};
 
